@@ -1,0 +1,70 @@
+#
+# This file is part of ExtendCopy.
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+# 
+# Copyright (C) hdsdi3g for hd3g.tv 2009-2012
+# 
+#
+List, copy and verify files while keeping control.
+
+Usage
+  java -jar extendcopy.jar ACTION -from SOURCE -to DESTINATION OPTIONS PROJECT
+
+ACTION: l or list / c or copy / v or verify / lc / cv / lcv
+SOURCE: the folder from which to go files.
+DESTINATION: the folder where your files go.
+
+OPTIONS : An optional one
+ -exclude -nohidden -keep OR -force -makehashtag -dryrun -notesthash
+
+PROJECT : The base name text files of lists.
+ Allows the return to work in case of manual stop.
+
+You can use -XX:MaxPermSize=256m -Xmx=512m to allow the Java VM
+ to use up to 512 MB of RAM (if you have very long lists).
+
+By default, the hash/digest is computed from in MD5.
+ You can change this value with the option -Dextendcopy.hashname=XXXX
+
+Dates and file permissions are not reflected on copies.
+Symlinks, special files (blocs. ..), Icon? files (OSX folder icons)
+are systematically ignored.
+The program does not convert between character code names file.
+Beware of "�" and other "Ã©" when you mount file systems from
+multiple operating systems.
+If you interrupt the application while copies / verifications, the
+processing resumes where it is stopped.
+
+Options for list
+ -exclude
+   Rules are used to exclude files to ignore .DS_Store, desktop.ini...
+ -nohidden
+   It ignores hidden files (dot files on Linux / OSX or "hidden" on Windows)
+Options for copy
+ -keep
+   If the file already exists on the destination, we do not touch it,
+   even if the size is different
+ -force
+   If the file already exists on the destination, it will overwrite anyway,
+   even if the size is identical.
+   Do not use -keep et -force simultaneously
+ -makehashtag
+   creates a sidecar file with each copied file containing the computed hash 
+ -dryrun
+   does not copy, but simulated it to verify the paths of destination files   
+   
+Option for verify
+ -notesthash
+   does not test hash calculation during the verification.
+   The verification did not focus more on the presence and size.
+
+Developpement / contact : hdsdi3g - http://hd3g.tv - https://github.com/hdsdi3g

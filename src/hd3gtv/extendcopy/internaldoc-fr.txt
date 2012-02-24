@@ -1,0 +1,75 @@
+#
+# This file is part of ExtendCopy.
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+# 
+# Copyright (C) hdsdi3g for hd3g.tv 2009-2012
+# 
+#
+Lister, copier et vérifier des fichiers tout en gardant le contrôle.
+
+Utilisation
+  java -jar extendcopy.jar ACTION -from SOURCE -to DESTINATION OPTIONS PROJET
+
+ACTION : l ou list / c ou copy / v ou verify / lc / cv / lcv
+SOURCE : le dossier d'où proviennent les fichiers.
+DESTINATION : le dossier où iront vos fichiers.
+
+OPTIONS : Une option facultative parmi
+ -exclude -nohidden -keep OU -force -makehashtag -dryrun -notesthash
+
+PROJET : Le nom de base des fichiers textes des listes.
+ Permet la reprise du travail en cas d'arret manuel.
+
+Vous pouvez utiliser -XX:MaxPermSize=256m -Xmx=512m pour permettre à la VM
+ Java d'utiliser jusqu'a 512 Mo de RAM (si vous avez des très longues listes).
+
+Par défaut, le hash/digest calculé est du MD5.
+ Vous pouvez changer cette valeur avec l'option -Dextendcopy.hashname=XXXX
+
+Les dates et les droits des fichiers ne sont pas répercutés sur les copies.
+Les liens symboliques, les fichiers spéciaux (blocs...), les fichiers Icon?
+(icônes de dossiers sous OSX) sont systématiquement ignorés.
+L'application ne fait pas de conversion de code de caractères entre les noms
+de fichiers.
+Attention aux "�" et autres "Ã©" si vous montez des systèmes de fichiers depuis
+plusieurs systèmes d'exploitation. 
+Si vous interrompez l'application pendant les copies/vérifications, le
+traitement reprendra là où il c'est arreté.
+
+Options pour list
+ -exclude
+   On utilise les règles d'exclusion de fichiers pour ignorer les .DS_Store,
+   desktop.ini...
+ -nohidden
+   On ignore les fichiers cachés (qui commencent par un point, sous Linux/OSX,
+   ou "caché" sous Windows)
+
+Options pour copy
+ -keep
+   Si le fichier existe déjà sur la destination, on n'y touche pas,
+   même si la taille est différente
+ -force
+   Si le fichier existe déjà sur la destination, on l'écrase de toute façon,
+   même si la taille est identique.
+   Ne pas utiliser -keep et -force en même temps
+ -makehashtag
+   crée un fichier side-car avec chaque fichier copié qui contient
+   le hash calculé 
+ -dryrun
+   ne fait pas de copie, mais la simule afin de vérifier les chemins de
+   destination des fichiers
+Option pour verify
+ -notesthash
+   ne fait pas de tests de calcul de hash lors de la vérification.
+   La vérification ne portera plus que sur la présence et la taille.
+
+Développement / contact : hdsdi3g - http://hd3g.tv - https://github.com/hdsdi3g 
