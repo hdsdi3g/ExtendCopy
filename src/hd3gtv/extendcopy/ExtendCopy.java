@@ -124,7 +124,7 @@ public class ExtendCopy {
 				throw new NullPointerException(doc_generic + " don't exists"); //$NON-NLS-1$
 			}
 			
-			BufferedReader br = new BufferedReader(new InputStreamReader(stream_ressource, "UTF-8")); //$NON-NLS-1$
+			BufferedReader br = new BufferedReader(new InputStreamReader(stream_ressource));
 			String line;
 			while ((line = br.readLine()) != null) {
 				if (line.trim().startsWith("#")) { //$NON-NLS-1$
