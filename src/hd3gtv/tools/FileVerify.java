@@ -35,7 +35,6 @@ public class FileVerify {
 	private File sourcefile;
 	private FileInputStream fileinputstream;
 	private byte[] filehash;
-	private Progress progress;
 	
 	private String sourcedigest;
 	private String destdigest;
@@ -50,10 +49,6 @@ public class FileVerify {
 			throw new FileNotFoundException(sourcefile.getPath() + " is directory"); //$NON-NLS-1$
 		}
 		this.sourcedigest = sourcedigest;
-	}
-	
-	public void setProgress(Progress progress) {
-		this.progress = progress;
 	}
 	
 	public void closeStreams() throws IOException {
@@ -77,29 +72,18 @@ public class FileVerify {
 	public void compute() throws IOException {
 		fileinputstream = new FileInputStream(sourcefile);
 		
-		if (progress != null) {
-			progress.start();
-			progress.setDatalen(sourcefile.length());
-		}
-		
 		messagedigestinstance.reset();
 		
 		byte[] buffer = new byte[512 * 1024];
 		int len;
 		
 		while ((len = fileinputstream.read(buffer)) > 0) {
-			if (progress != null) {
-				progress.incDatapos(len);
-			}
 			messagedigestinstance.update(buffer, 0, len);
 		}
 		filehash = messagedigestinstance.digest();
 		
 		destdigest = byteToString(filehash);
 		
-		if (progress != null) {
-			progress.setStop();
-		}
 	}
 	
 	public boolean isValid() {

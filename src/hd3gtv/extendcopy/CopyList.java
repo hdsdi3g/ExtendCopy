@@ -18,7 +18,6 @@ package hd3gtv.extendcopy;
 
 import hd3gtv.tools.FileCopy;
 import hd3gtv.tools.FileNameFactory;
-import hd3gtv.tools.Progress;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -204,7 +203,6 @@ public class CopyList extends Basefunctions {
 					/**
 					 * Copy of the file
 					 */
-					Progress progress = null;
 					FileCopy filecopymd5 = null;
 					
 					if (to.exists()) {
@@ -239,9 +237,7 @@ public class CopyList extends Basefunctions {
 					}
 					
 					try {
-						progress = new Progress(System.out);
 						filecopymd5 = new FileCopy(from, to, hashname);
-						filecopymd5.setProgress(progress);
 					} catch (IOException e) {
 						throw e;
 					} catch (NoSuchAlgorithmException nsae) {

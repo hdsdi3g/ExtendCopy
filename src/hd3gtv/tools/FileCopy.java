@@ -38,7 +38,6 @@ public class FileCopy {
 	private FileInputStream fileinputstream;
 	private FileOutputStream fileoutputstream;
 	private byte[] filehash;
-	private Progress progress;
 	
 	public FileCopy(File sourcefile, File destfile, String digestname) throws NoSuchAlgorithmException, FileNotFoundException {
 		messagedigestinstance = MessageDigest.getInstance(digestname);
@@ -59,10 +58,6 @@ public class FileCopy {
 		}
 	}
 	
-	public void setProgress(Progress progress) {
-		this.progress = progress;
-	}
-	
 	public void closeStreams() throws IOException {
 		if (fileoutputstream != null) {
 			fileoutputstream.flush();
@@ -77,27 +72,16 @@ public class FileCopy {
 		fileinputstream = new FileInputStream(sourcefile);
 		fileoutputstream = new FileOutputStream(destfile);
 		
-		if (progress != null) {
-			progress.start();
-			progress.setDatalen(sourcefile.length());
-		}
-		
 		messagedigestinstance.reset();
 		
 		byte[] buffer = new byte[512 * 1024];
 		int len;
 		
 		while ((len = fileinputstream.read(buffer)) > 0) {
-			if (progress != null) {
-				progress.incDatapos(len);
-			}
 			fileoutputstream.write(buffer, 0, len);
 			messagedigestinstance.update(buffer, 0, len);
 		}
 		filehash = messagedigestinstance.digest();
-		if (progress != null) {
-			progress.setStop();
-		}
 	}
 	
 	public static String byteToString(byte[] b) {

@@ -19,7 +19,6 @@ package hd3gtv.extendcopy;
 
 import hd3gtv.tools.FileNameFactory;
 import hd3gtv.tools.FileVerify;
-import hd3gtv.tools.Progress;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -217,7 +216,6 @@ public class VerifyList extends Basefunctions {
 					}
 				} else {
 					fileverify = new FileVerify(joblist.get(i).source, joblist.get(i).hash, hashname);
-					fileverify.setProgress(new Progress(System.out));
 					fileverify.compute();
 					fileverify.closeStreams();
 					
