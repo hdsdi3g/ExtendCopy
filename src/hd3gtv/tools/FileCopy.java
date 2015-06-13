@@ -21,6 +21,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -35,6 +37,8 @@ public class FileCopy {
 	private MessageDigest messagedigestinstance;
 	private File sourcefile;
 	private File destfile;
+	private FileChannel source_channel;
+	private FileChannel dest_channel;
 	private FileInputStream fileinputstream;
 	private FileOutputStream fileoutputstream;
 	private byte[] filehash;
@@ -59,28 +63,71 @@ public class FileCopy {
 	}
 	
 	public void closeStreams() throws IOException {
-		if (fileoutputstream != null) {
-			fileoutputstream.flush();
-			fileoutputstream.close();
+		IOException last_e = null;
+		try {
+			if (source_channel != null) {
+				source_channel.close();
+			}
+		} catch (IOException e) {
+			last_e = e;
 		}
-		if (fileinputstream != null) {
-			fileinputstream.close();
+		try {
+			if (dest_channel != null) {
+				dest_channel.close();
+			}
+		} catch (IOException e) {
+			if (last_e != null) {
+				last_e.printStackTrace();
+			}
+			last_e = e;
+		}
+		try {
+			if (fileinputstream != null) {
+				fileinputstream.close();
+			}
+		} catch (IOException e) {
+			if (last_e != null) {
+				last_e.printStackTrace();
+			}
+			last_e = e;
+		}
+		try {
+			if (fileoutputstream != null) {
+				fileoutputstream.close();
+				fileinputstream.close();
+			}
+		} catch (IOException e) {
+			if (last_e != null) {
+				last_e.printStackTrace();
+			}
+			last_e = e;
+		}
+		if (last_e != null) {
+			throw last_e;
 		}
 	}
 	
 	public void copy() throws IOException {
 		fileinputstream = new FileInputStream(sourcefile);
+		source_channel = fileinputstream.getChannel();
+		
 		fileoutputstream = new FileOutputStream(destfile);
+		dest_channel = fileoutputstream.getChannel();
 		
 		messagedigestinstance.reset();
 		
-		byte[] buffer = new byte[512 * 1024];
+		ByteBuffer buffer = ByteBuffer.allocate(4 * 1024);
+		@SuppressWarnings("unused")
 		int len;
 		
-		while ((len = fileinputstream.read(buffer)) > 0) {
-			fileoutputstream.write(buffer, 0, len);
-			messagedigestinstance.update(buffer, 0, len);
+		while ((len = source_channel.read(buffer)) != -1) {
+			buffer.flip();
+			dest_channel.write(buffer);
+			buffer.position(0);
+			messagedigestinstance.update(buffer);
+			buffer.clear();
 		}
+		
 		filehash = messagedigestinstance.digest();
 	}
 	

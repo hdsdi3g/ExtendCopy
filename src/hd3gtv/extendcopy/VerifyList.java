@@ -94,6 +94,7 @@ public class VerifyList extends Basefunctions {
 			int linenum = 0;
 			InputStream ips = new FileInputStream(options.getVerifylist());
 			InputStreamReader ipsr = new InputStreamReader(ips);
+			@SuppressWarnings("resource")
 			BufferedReader br = new BufferedReader(ipsr);
 			String line;
 			String[] elements;

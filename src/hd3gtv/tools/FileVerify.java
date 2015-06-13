@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -38,6 +40,7 @@ public class FileVerify {
 	
 	private String sourcedigest;
 	private String destdigest;
+	private FileChannel source_channel;
 	
 	public FileVerify(File sourcefile, String sourcedigest, String digestname) throws NoSuchAlgorithmException, FileNotFoundException {
 		messagedigestinstance = MessageDigest.getInstance(digestname);
@@ -52,6 +55,9 @@ public class FileVerify {
 	}
 	
 	public void closeStreams() throws IOException {
+		if (source_channel != null) {
+			source_channel.close();
+		}
 		if (fileinputstream != null) {
 			fileinputstream.close();
 		}
@@ -71,19 +77,22 @@ public class FileVerify {
 	
 	public void compute() throws IOException {
 		fileinputstream = new FileInputStream(sourcefile);
+		source_channel = fileinputstream.getChannel();
 		
 		messagedigestinstance.reset();
 		
-		byte[] buffer = new byte[512 * 1024];
+		ByteBuffer buffer = ByteBuffer.allocate(4 * 1024);
+		@SuppressWarnings("unused")
 		int len;
 		
-		while ((len = fileinputstream.read(buffer)) > 0) {
-			messagedigestinstance.update(buffer, 0, len);
+		while ((len = source_channel.read(buffer)) != -1) {
+			buffer.flip();
+			messagedigestinstance.update(buffer);
+			buffer.clear();
 		}
+		
 		filehash = messagedigestinstance.digest();
-		
 		destdigest = byteToString(filehash);
-		
 	}
 	
 	public boolean isValid() {
