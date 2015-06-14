@@ -38,7 +38,7 @@ public class ExtendCopy {
 	
 	protected ApplicationArgs aargs;
 	
-	private static final String about = "ExtendCopy v1.0 - Copyright (C) hdsdi3g for hd3g.tv 2009-2012"; //$NON-NLS-1$
+	private static final String about = "ExtendCopy v1.1 - Copyright (C) hdsdi3g for hd3g.tv 2009-2015"; //$NON-NLS-1$
 	public static final int RETURN_CODE_NO_PARAM = 1;
 	public static final int RETURN_CODE_GENERIC_ERROR = 2;
 	
